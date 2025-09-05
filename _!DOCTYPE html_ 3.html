@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Damas</title>
+  <link rel="stylesheet" href="body.css">
+
+</head>
+<body>
+  <div class="topo">Jogo de Damas</div>
+  <p><a href="Jogos de Tabuleiro.html"> Voltar para a página inicial</a></p>
+  <button onclick="reiniciar()"> Reiniciar Jogo</button>
+
+  <div class="placar">
+    Vermelho: <span id="pontosRed">0</span> | Preto: <span id="pontosBlack">0</span>
+  </div>
+
+  <div class="board" id="board"></div>
+
+  <script>
+    const boardEl = document.getElementById("board");
+    const SIZE = 8;
+    let board = [];
+    let selected = null;
+    let currentPlayer = "red";
+    let pontos = { red: 0, black: 0 };
+
+    function createBoard() {
+      boardEl.innerHTML = "";
+      board = [];
+      pontos = { red: 0, black: 0 };
+      updatePlacar();
+
+      for (let r = 0; r < SIZE; r++) {
+        let row = [];
+        for (let c = 0; c < SIZE; c++) {
+          const cell = document.createElement("div");
+          cell.className = "cell " + ((r + c) % 2 === 0 ? "light" : "dark");
+          cell.dataset.row = r;
+          cell.dataset.col = c;
+
+          if ((r + c) % 2 === 1) {
+            if (r < 3) {
+              cell.appendChild(createPiece("black"));
+              row.push("black");
+            } else if (r > 4) {
+              cell.appendChild(createPiece("red"));
+              row.push("red");
+            } else {
+              row.push(null);
+            }
+          } else {
+            row.push(null);
+          }
+
+          cell.addEventListener("click", () => handleClick(r, c));
+          boardEl.appendChild(cell);
+        }
+        board.push(row);
+      }
+    }
+
+    function createPiece(color) {
+      const piece = document.createElement("div");
+      piece.className = "piece " + color;
+      if (color.includes("king")) piece.classList.add("king");
+      return piece;
+    }
+
+    function handleClick(r, c) {
+      const cellValue = board[r][c];
+      if (cellValue && cellValue.startsWith(currentPlayer)) {
+        clearSelection();
+        selected = { r, c };
+        getCell(r, c).classList.add("selected");
+      } else if (!cellValue && selected) {
+        movePiece(selected.r, selected.c, r, c);
+      }
+    }
+
+    function movePiece(r1, c1, r2, c2) {
+      const pieceColor = board[r1][c1];
+      if (!isValidMove(r1, c1, r2, c2, pieceColor)) return;
+
+      // captura
+      if (Math.abs(r2 - r1) === 2 && Math.abs(c2 - c1) === 2) {
+        const midRow = (r1 + r2) / 2;
+        const midCol = (c1 + c2) / 2;
+        const captured = board[midRow][midCol];
+        board[midRow][midCol] = null;
+        pontos[currentPlayer]++;
+        updatePlacar();
+      }
+
+      board[r1][c1] = null;
+      board[r2][c2] = pieceColor;
+
+      // promoção
+      if (pieceColor === "red" && r2 === 0) board[r2][c2] = "red-king";
+      if (pieceColor === "black" && r2 === SIZE - 1) board[r2][c2] = "black-king";
+
+      redrawBoard();
+
+      // captura múltipla
+      if (Math.abs(r2 - r1) === 2) {
+        selected = { r: r2, c: c2 };
+        getCell(r2, c2).classList.add("selected");
+        if (temCaptura(r2, c2, board[r2][c2])) return;
+      }
+
+      selected = null;
+      currentPlayer = currentPlayer === "red" ? "black" : "red";
+    }
+
+    function isValidMove(r1, c1, r2, c2, color) {
+      if (board[r2][c2]) return false;
+      const isKing = color.includes("king");
+      const dir = color.startsWith("red") ? -1 : 1;
+
+      // movimento simples
+      if (Math.abs(c1 - c2) === 1 && (isKing || r2 - r1 === dir)) return true;
+
+      // captura
+      if (Math.abs(c1 - c2) === 2 && (isKing || r2 - r1 === dir * 2)) {
+        const midRow = (r1 + r2) / 2;
+        const midCol = (c1 + c2) / 2;
+        if (board[midRow][midCol] && !board[midRow][midCol].startsWith(color.split("-")[0])) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function temCaptura(r, c, color) {
+      const isKing = color.includes("king");
+      const dirs = isKing ? [[1,1],[1,-1],[-1,1],[-1,-1]] : 
+                   (color.startsWith("red") ? [[-1,1],[-1,-1]] : [[1,1],[1,-1]]);
+      for (let [dr, dc] of dirs) {
+        const midRow = r + dr;
+        const midCol = c + dc;
+        const endRow = r + dr*2;
+        const endCol = c + dc*2;
+        if (endRow >= 0 && endRow < SIZE && endCol >= 0 && endCol < SIZE) {
+          if (board[midRow][midCol] && !board[midRow][midCol].startsWith(color.split("-")[0]) && !board[endRow][endCol]) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    function getCell(r, c) {
+      return boardEl.children[r * SIZE + c];
+    }
+
+    function redrawBoard() {
+      for (let r = 0; r < SIZE; r++) {
+        for (let c = 0; c < SIZE; c++) {
+          const cell = getCell(r, c);
+          cell.innerHTML = "";
+          cell.classList.remove("selected");
+          if (board[r][c]) {
+            cell.appendChild(createPiece(board[r][c]));
+          }
+        }
+      }
+    }
+
+    function clearSelection() {
+      for (let i = 0; i < boardEl.children.length; i++) {
+        boardEl.children[i].classList.remove("selected");
+      }
+    }
+
+    function reiniciar() {
+      createBoard();
+      currentPlayer = "red";
+      selected = null;
+    }
+
+    function updatePlacar() {
+      document.getElementById("pontosRed").innerText = pontos.red;
+      document.getElementById("pontosBlack").innerText = pontos.black;
+    }
+
+    createBoard();
+  </script>
+</body>
+</html>
