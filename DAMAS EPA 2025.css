@@ -1,0 +1,95 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  background: #f4f4f4;
+  font-size: 20px;
+}
+
+.topo {
+  background: #333;
+  color: white;
+  padding: 20px;
+  font-size: 2.2em;
+}
+
+a { 
+  text-decoration: none; 
+  color: #333; 
+  font-size: 1.3em;
+}
+
+button {
+  margin: 15px;
+  padding: 15px 30px;
+  font-size: 1.3em;
+  border: none;
+  border-radius: 10px;
+  background: #444;
+  color: white;
+  cursor: pointer;
+}
+button:hover { 
+  background: #666; 
+}
+
+.placar { 
+  margin: 15px; 
+  font-size: 1.5em; 
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  margin: 0 auto;
+  width: 95vw;
+  max-width: 600px;
+  aspect-ratio: 1 / 1;
+  border: 3px solid #333;
+}
+
+.cell { 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+}
+
+.light { 
+  background: #eee; 
+}
+.dark { 
+  background: #444; 
+}
+
+.piece { 
+  width: 70%; 
+  height: 70%; 
+  border-radius: 50%; 
+}
+.red { 
+  background: red; 
+}
+.black { 
+  background: black; 
+}
+.king{
+    border: 4px solid yellow;
+}
+
+.red.king {
+  border: 4px solid yellow;  
+  border-bottom: 4px solid red; 
+}
+
+.black.king {
+  border: 4px solid yellow;   
+  border-bottom: 4px solid black; 
+}
+
+
+.selected { 
+  outline: 3px solid yellow;
+
+}
