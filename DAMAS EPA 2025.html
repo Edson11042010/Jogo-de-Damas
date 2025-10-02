@@ -122,6 +122,55 @@ function movePiece(r1,c1,r2,c2){
   if(piece==="black" && r2===SIZE-1) board[r2][c2]="black-king";
 
   redrawBoard(); // atualiza visual do tabuleiro
+  function isValidMove(r1, c1, r2, c2, piece) {
+  if (board[r2][c2]) return false; // célula ocupada
+
+  const isKing = piece.includes("king");
+  const dir = piece.startsWith("red") ? -1 : 1;
+
+  // Movimento simples (não-dama): apenas 1 casa diagonal
+  if (!isKing) {
+    if (Math.abs(c1 - c2) === 1 && r2 - r1 === dir) return true;
+
+    // Captura comum (2 casas)
+    if (Math.abs(c1 - c2) === 2 && r2 - r1 === dir * 2) {
+      const midRow = (r1 + r2) / 2;
+      const midCol = (c1 + c2) / 2;
+      if (
+        board[midRow][midCol] &&
+        !board[midRow][midCol].startsWith(piece.split("-")[0])
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // Movimento da DAMA (pode andar quantas casas quiser na diagonal)
+  if (isKing) {
+    if (Math.abs(r2 - r1) === Math.abs(c2 - c1)) {
+      let stepR = (r2 > r1 ? 1 : -1);
+      let stepC = (c2 > c1 ? 1 : -1);
+      let r = r1 + stepR, c = c1 + stepC;
+      let enemyFound = false;
+
+      while (r !== r2 && c !== c2) {
+        if (board[r][c]) {
+          if (board[r][c].startsWith(piece.split("-")[0])) {
+            return false; // peça amiga bloqueia
+          } else {
+            if (enemyFound) return false; // só pode pular 1 inimigo
+            enemyFound = true; // achou inimigo
+          }
+        }
+        r += stepR;
+        c += stepC;
+      }
+      return true;
+    }
+  }
+  return false;
+}
 
   // captura múltipla
   if(Math.abs(r2-r1)===2){
@@ -206,3 +255,4 @@ createBoard();
 </script>
 </body>
 </html>
+
