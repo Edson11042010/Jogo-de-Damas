@@ -102,3 +102,18 @@ button:hover {
   outline: 3px solid yellow; /* Marca a peça escolhida */
 }
 
+#turno {
+  margin: 10px;
+  font-size: 1.4em;
+  font-weight: bold;
+}
+
+.turno-red {
+  color: red;
+}
+
+.turno-black {
+  color: black;
+}
+
+
