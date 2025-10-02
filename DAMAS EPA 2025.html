@@ -20,8 +20,11 @@
 
 <!-- Placar do jogo -->
 <div class="placar">
-   Vermelho: <span id="pontosRed">0</span> |  Preto: <span id="pontosBlack">0</span>
+   Vermelho: <span id="pontosRed">0</span> | Preto: <span id="pontosBlack">0</span>
 </div>
+
+<!-- Indicação do turno -->
+<div id="turno">Vez de: Vermelho 🔴</div>
 
 <!-- Tabuleiro do jogo -->
 <div class="board" id="board"></div>
@@ -31,7 +34,7 @@
 /* Tamanho do tabuleiro */
 const SIZE = 8;
 
-/* Estado do tabuleiro: array 2D, posição selecionada, jogador atual e pontos */
+/* Estado do tabuleiro */
 let board = [];
 let selected = null;
 let currentPlayer = "red";
@@ -42,125 +45,127 @@ const boardEl = document.getElementById("board");
 
 /* Função que cria o tabuleiro inicial */
 function createBoard() {
-  boardEl.innerHTML = ""; // limpa o tabuleiro HTML
-  board = [];             // limpa array do tabuleiro
-  pontos = { red:0, black:0 }; // reseta pontos
-  updatePlacar();         // atualiza o placar
-  selected = null;        // nenhuma peça selecionada
-  currentPlayer = "red";  // jogador vermelho começa
+  boardEl.innerHTML = "";
+  board = [];
+  pontos = { red:0, black:0 };
+  selected = null;
+  currentPlayer = "red";
+  updatePlacar();
 
   for(let r=0; r<SIZE; r++){
     let row = [];
     for(let c=0; c<SIZE; c++){
-      // Cria cada célula do tabuleiro
       const cell = document.createElement("div");
-      cell.className = "cell " + ((r+c)%2===0 ? "light":"dark"); // alterna cores
-      cell.dataset.row = r; // armazena linha
-      cell.dataset.col = c; // armazena coluna
-      cell.addEventListener("click",()=>handleClick(r,c)); // clique na célula
+      cell.className = "cell " + ((r+c)%2===0 ? "light":"dark");
+      cell.dataset.row = r;
+      cell.dataset.col = c;
+      cell.addEventListener("click",()=>handleClick(r,c));
 
-      // Coloca peças nos primeiros 3 e últimos 3 linhas
-      if((r+c)%2===1){ // apenas nas casas escuras
-        if(r<3){ 
-          cell.appendChild(createPiece("black")); // peça preta
-          row.push("black"); 
-        } else if(r>4){ 
-          cell.appendChild(createPiece("red")); // peça vermelha
-          row.push("red"); 
-        } else row.push(null); // casa vazia
-      } else row.push(null); // casa clara vazia
+      if((r+c)%2===1){
+        if(r<3){
+          cell.appendChild(createPiece("black"));
+          row.push("black");
+        } else if(r>4){
+          cell.appendChild(createPiece("red"));
+          row.push("red");
+        } else row.push(null);
+      } else row.push(null);
 
       boardEl.appendChild(cell);
     }
-    board.push(row); // adiciona linha ao tabuleiro
+    board.push(row);
   }
 }
 
 /* Função que cria uma peça */
 function createPiece(color){
   const piece = document.createElement("div");
-  piece.className = "piece " + color; // cor da peça
-  if(color.includes("king")) piece.classList.add("king"); // se for dama, adiciona classe
+  piece.className = "piece " + color;
+  if(color.includes("king")) piece.classList.add("king");
   return piece;
 }
 
-/* Função que lida com o clique do jogador */
+/* Clique do jogador */
 function handleClick(r,c){
   const cellValue = board[r][c];
-  // Se clicar na própria peça
   if(cellValue && cellValue.startsWith(currentPlayer)){
-    clearSelection(); // limpa seleção anterior
-    selected = {r,c}; // marca peça selecionada
-    getCell(r,c).classList.add("selected"); // destaca visualmente
+    clearSelection();
+    selected = {r,c};
+    getCell(r,c).classList.add("selected");
   } 
-  // Se clicar em célula vazia e tiver peça selecionada
   else if(!cellValue && selected){
-    movePiece(selected.r, selected.c, r, c); // tenta mover peça
+    movePiece(selected.r, selected.c, r, c);
   }
 }
 
-/* Função que move uma peça */
+/* Movimentação da peça */
 function movePiece(r1,c1,r2,c2){
   let piece = board[r1][c1];
-  if(!isValidMove(r1,c1,r2,c2,piece)) return; // valida movimento
+  if(!isValidMove(r1,c1,r2,c2,piece)) return;
 
-  // captura de peça adversária
+  // captura
   if(Math.abs(r2-r1)===2 && Math.abs(c2-c1)===2){
     const midRow = (r1+r2)/2;
     const midCol = (c1+c2)/2;
-    board[midRow][midCol] = null; // remove peça capturada
-    pontos[currentPlayer]++;       // soma ponto
+    board[midRow][midCol] = null;
+    pontos[currentPlayer]++;
     updatePlacar();
   }
 
-  // move a peça
+  // move
   board[r1][c1] = null;
   board[r2][c2] = piece;
 
-  // promoção para dama
+  // promoção
   if(piece==="red" && r2===0) board[r2][c2]="red-king";
   if(piece==="black" && r2===SIZE-1) board[r2][c2]="black-king";
 
-  redrawBoard(); // atualiza visual do tabuleiro
-  function isValidMove(r1, c1, r2, c2, piece) {
-  if (board[r2][c2]) return false; // célula ocupada
+  redrawBoard();
 
+  // captura múltipla
+  if(Math.abs(r2-r1)===2){
+    selected = {r:r2, c:c2};
+    getCell(r2,c2).classList.add("selected");
+    if(temCaptura(r2,c2, board[r2][c2])) return;
+  }
+
+  selected = null;
+  currentPlayer = currentPlayer==="red" ? "black" : "red";
+  updatePlacar();
+}
+
+/* Validação de movimento */
+function isValidMove(r1,c1,r2,c2,piece){
+  if(board[r2][c2]) return false;
   const isKing = piece.includes("king");
-  const dir = piece.startsWith("red") ? -1 : 1;
+  const dir = piece.startsWith("red")?-1:1;
 
-  // Movimento simples (não-dama): apenas 1 casa diagonal
-  if (!isKing) {
-    if (Math.abs(c1 - c2) === 1 && r2 - r1 === dir) return true;
-
-    // Captura comum (2 casas)
-    if (Math.abs(c1 - c2) === 2 && r2 - r1 === dir * 2) {
-      const midRow = (r1 + r2) / 2;
-      const midCol = (c1 + c2) / 2;
-      if (
-        board[midRow][midCol] &&
-        !board[midRow][midCol].startsWith(piece.split("-")[0])
-      ) {
-        return true;
-      }
+  // peça normal
+  if(!isKing){
+    if(Math.abs(c1-c2)===1 && r2-r1===dir) return true;
+    if(Math.abs(c1-c2)===2 && r2-r1===dir*2){
+      const midRow = (r1+r2)/2;
+      const midCol = (c1+c2)/2;
+      if(board[midRow][midCol] && !board[midRow][midCol].startsWith(piece.split("-")[0])) return true;
     }
     return false;
   }
 
-  // Movimento da DAMA (pode andar quantas casas quiser na diagonal)
-  if (isKing) {
-    if (Math.abs(r2 - r1) === Math.abs(c2 - c1)) {
+  // dama: pode andar qualquer número de casas na diagonal
+  if(isKing){
+    if(Math.abs(r2-r1) === Math.abs(c2-c1)){
       let stepR = (r2 > r1 ? 1 : -1);
       let stepC = (c2 > c1 ? 1 : -1);
       let r = r1 + stepR, c = c1 + stepC;
       let enemyFound = false;
 
-      while (r !== r2 && c !== c2) {
-        if (board[r][c]) {
-          if (board[r][c].startsWith(piece.split("-")[0])) {
-            return false; // peça amiga bloqueia
+      while(r !== r2 && c !== c2){
+        if(board[r][c]){
+          if(board[r][c].startsWith(piece.split("-")[0])){
+            return false;
           } else {
-            if (enemyFound) return false; // só pode pular 1 inimigo
-            enemyFound = true; // achou inimigo
+            if(enemyFound) return false;
+            enemyFound = true;
           }
         }
         r += stepR;
@@ -172,37 +177,7 @@ function movePiece(r1,c1,r2,c2){
   return false;
 }
 
-  // captura múltipla
-  if(Math.abs(r2-r1)===2){
-    selected = {r:r2, c:c2};
-    getCell(r2,c2).classList.add("selected");
-    if(temCaptura(r2,c2, board[r2][c2])) return; // permite nova captura
-  }
-
-  selected = null; // desmarca peça
-  currentPlayer = currentPlayer==="red" ? "black" : "red"; // troca jogador
-}
-
-/* Função que valida se o movimento é permitido */
-function isValidMove(r1,c1,r2,c2,piece){
-  if(board[r2][c2]) return false; // célula ocupada
-  const isKing = piece.includes("king");
-  const dir = piece.startsWith("red")?-1:1; // direção da peça
-
-  // movimento simples (uma casa diagonal)
-  if(Math.abs(c1-c2)===1 && (isKing || r2-r1===dir)) return true;
-
-  // movimento de captura (duas casas diagonal)
-  if(Math.abs(c1-c2)===2 && (isKing || r2-r1===dir*2)){
-    const midRow = (r1+r2)/2;
-    const midCol = (c1+c2)/2;
-    // só permite se houver peça adversária no meio
-    if(board[midRow][midCol] && !board[midRow][midCol].startsWith(piece.split("-")[0])) return true;
-  }
-  return false;
-}
-
-/* Função que verifica se há captura possível a partir de uma posição */
+/* Verifica se há captura possível */
 function temCaptura(r,c,piece){
   const isKing = piece.includes("king");
   const dirs = isKing ? [[1,1],[1,-1],[-1,1],[-1,-1]] : 
@@ -214,43 +189,45 @@ function temCaptura(r,c,piece){
     const endC = c+dc*2;
     if(endR>=0 && endR<SIZE && endC>=0 && endC<SIZE){
       if(board[midR][midC] && !board[midR][midC].startsWith(piece.split("-")[0]) && !board[endR][endC]){
-        return true; // existe captura disponível
+        return true;
       }
     }
   }
   return false;
 }
 
-/* Função que retorna a célula HTML pelo índice */
+/* Pega célula pelo índice */
 function getCell(r,c){ return boardEl.children[r*SIZE+c]; }
 
-/* Função que redesenha todo o tabuleiro */
+/* Atualiza visual do tabuleiro */
 function redrawBoard(){
   for(let r=0;r<SIZE;r++){
     for(let c=0;c<SIZE;c++){
       const cell = getCell(r,c);
-      cell.innerHTML=""; // limpa célula
-      cell.classList.remove("selected"); // remove destaque
-      if(board[r][c]) cell.appendChild(createPiece(board[r][c])); // adiciona peça
+      cell.innerHTML="";
+      cell.classList.remove("selected");
+      if(board[r][c]) cell.appendChild(createPiece(board[r][c]));
     }
   }
 }
 
-/* Função que limpa a seleção visual das peças */
+/* Limpa seleção */
 function clearSelection(){
   for(let i=0;i<boardEl.children.length;i++) boardEl.children[i].classList.remove("selected");
 }
 
-/* Função que reinicia o jogo */
+/* Reinicia o jogo */
 function reiniciar(){ createBoard(); }
 
-/* Função que atualiza o placar no HTML */
+/* Atualiza placar e turno */
 function updatePlacar(){
   document.getElementById("pontosRed").innerText = pontos.red;
   document.getElementById("pontosBlack").innerText = pontos.black;
+  const turnoEl = document.getElementById("turno");
+  turnoEl.innerText = currentPlayer === "red" ? "Vez de: Vermelho 🔴" : "Vez de: Preto ⚫";
 }
 
-/* Cria o tabuleiro ao carregar a página */
+/* Inicializa tabuleiro */
 createBoard();
 </script>
 </body>
