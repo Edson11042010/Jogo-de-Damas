@@ -1,5 +1,5 @@
 # Jogo de Damas
-Jogo de Damas simples, para apresentação do EPA (Etec de Porteiras Abertas) 2025 na Etec Edson Galvão de Itapetininga-SP 
+Jogo de Damas simples, para apresentação do EPA (Etec de Porteiras Abertas) 2025 na ETEC Professor Edson Galvão de Itapetininga-SP 
 
 # Linguagens
 Uso das linguagens de programação: HTML, CSS e JavaScript
