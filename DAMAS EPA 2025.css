@@ -1,95 +1,104 @@
+/* ====== ESTILO GERAL ====== */
 body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  margin: 0;
-  padding: 0;
-  background: #f4f4f4;
-  font-size: 20px;
+  font-family: Arial, sans-serif; /* Fonte usada no texto */
+  text-align: center; /* Centraliza o conteúdo */
+  margin: 0; /* Remove margem padrão */
+  padding: 0; /* Remove espaçamento interno padrão */
+  background: #f4f4f4; /* Cor de fundo da página */
+  font-size: 20px; /* Tamanho base da fonte */
 }
 
+/* ====== TOPO ====== */
 .topo {
-  background: #333;
-  color: white;
-  padding: 20px;
-  font-size: 2.2em;
+  background: #333; /* Fundo escuro */
+  color: white; /* Texto branco */
+  padding: 20px; /* Espaçamento interno */
+  font-size: 2.2em; /* Título grande */
 }
 
+/* ====== LINKS ====== */
 a { 
-  text-decoration: none; 
-  color: #333; 
-  font-size: 1.3em;
+  text-decoration: none; /* Remove sublinhado */
+  color: #333; /* Cor do link */
+  font-size: 1.3em; /* Tamanho do link */
 }
 
+/* ====== BOTÕES ====== */
 button {
-  margin: 15px;
-  padding: 15px 30px;
-  font-size: 1.3em;
-  border: none;
-  border-radius: 10px;
-  background: #444;
-  color: white;
-  cursor: pointer;
+  margin: 15px; /* Espaço externo */
+  padding: 15px 30px; /* Espaço interno (altura x largura) */
+  font-size: 1.3em; /* Texto do botão maior */
+  border: none; /* Remove borda padrão */
+  border-radius: 10px; /* Cantos arredondados */
+  background: #444; /* Fundo cinza escuro */
+  color: white; /* Texto branco */
+  cursor: pointer; /* Cursor de mãozinha */
 }
 button:hover { 
-  background: #666; 
+  background: #666; /* Fundo muda quando passa o mouse */
 }
 
+/* ====== PLACAR ====== */
 .placar { 
-  margin: 15px; 
-  font-size: 1.5em; 
+  margin: 15px; /* Espaço externo */
+  font-size: 1.5em; /* Texto maior */
 }
 
+/* ====== TABULEIRO ====== */
 .board {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  grid-template-rows: repeat(8, 1fr);
-  margin: 0 auto;
-  width: 95vw;
-  max-width: 600px;
-  aspect-ratio: 1 / 1;
-  border: 3px solid #333;
+  display: grid; /* Usa layout em grade */
+  grid-template-columns: repeat(8, 1fr); /* 8 colunas iguais */
+  grid-template-rows: repeat(8, 1fr); /* 8 linhas iguais */
+  margin: 0 auto; /* Centraliza na tela */
+  width: 95vw; /* Ocupa 95% da largura da tela */
+  max-width: 600px; /* Largura máxima */
+  aspect-ratio: 1 / 1; /* Mantém quadrado */
+  border: 3px solid #333; /* Borda do tabuleiro */
 }
 
 .cell { 
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
+  display: flex; /* Usa flexbox */
+  justify-content: center; /* Centraliza na horizontal */
+  align-items: center; /* Centraliza na vertical */
 }
 
 .light { 
-  background: #eee; 
+  background: #eee; /* Cor clara da casa */
 }
 .dark { 
-  background: #444; 
+  background: #444; /* Cor escura da casa */
 }
 
+/* ====== PEÇAS ====== */
 .piece { 
-  width: 70%; 
-  height: 70%; 
-  border-radius: 50%; 
+  width: 70%; /* Tamanho proporcional da peça */
+  height: 70%; /* Mantém proporção */
+  border-radius: 50%; /* Deixa redonda */
 }
 .red { 
-  background: red; 
+  background: red; /* Peça vermelha */
 }
 .black { 
-  background: black; 
+  background: black; /* Peça preta */
 }
+
+/* ====== DAMAS ====== */
 .king{
-    border: 4px solid yellow;
+  border: 4px solid yellow; /* Borda amarela de destaque */
 }
 
 .red.king {
-  border: 4px solid yellow;  
-  border-bottom: 4px solid red; 
+  border: 4px solid yellow;  /* Mantém borda amarela */
+  border-bottom: 4px solid red; /* Parte de baixo vermelha */
 }
 
 .black.king {
-  border: 4px solid yellow;   
-  border-bottom: 4px solid black; 
+  border: 4px solid yellow;   /* Mantém borda amarela */
+  border-bottom: 4px solid black; /* Parte de baixo preta */
 }
 
-
+/* ====== PEÇA SELECIONADA ====== */
 .selected { 
-  outline: 3px solid yellow;
-
+  outline: 3px solid yellow; /* Marca a peça escolhida */
 }
+
