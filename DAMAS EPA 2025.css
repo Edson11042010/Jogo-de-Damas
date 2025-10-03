@@ -116,4 +116,10 @@ button:hover {
   color: black;
 }
 
+footer{
+  background: #333; /* Fundo escuro */
+  color: white; /* Texto branco */
+  padding: 20px; /* Espaçamento interno */
+}
+
 
