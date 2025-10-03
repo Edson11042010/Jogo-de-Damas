@@ -24,7 +24,7 @@
 </div>
 
 <!-- Indicação do turno -->
-<div id="turno">Vez de: Vermelho 🔴</div>
+<div id="turno">Vez de: Vermelho </div>
 
 <!-- Tabuleiro do jogo -->
 <div class="board" id="board"></div>
@@ -178,23 +178,28 @@ function isValidMove(r1,c1,r2,c2,piece){
 }
 
 /* Verifica se há captura possível */
-function temCaptura(r,c,piece){
+function temCaptura(r, c, piece) {
   const isKing = piece.includes("king");
-  const dirs = isKing ? [[1,1],[1,-1],[-1,1],[-1,-1]] : 
-               (piece.startsWith("red")?[[-1,1],[-1,-1]]:[[1,1],[1,-1]]);
-  for(const [dr,dc] of dirs){
-    const midR = r+dr;
-    const midC = c+dc;
-    const endR = r+dr*2;
-    const endC = c+dc*2;
-    if(endR>=0 && endR<SIZE && endC>=0 && endC<SIZE){
-      if(board[midR][midC] && !board[midR][midC].startsWith(piece.split("-")[0]) && !board[endR][endC]){
-        return true;
+  const dirs = isKing 
+    ? [[1, 1], [1, -1], [-1, 1], [-1, -1]] 
+    : (piece.startsWith("red") ? [[-1, 1], [-1, -1]] : [[1, 1], [1, -1]]);
+
+  for (const [dr, dc] of dirs) {
+    const midR = r + dr;
+    const midC = c + dc;
+    const endR = r + dr * 2;
+    const endC = c + dc * 2;
+
+    if (endR >= 0 && endR < SIZE && endC >= 0 && endC < SIZE) {
+      if (board[midR][midC] && !board[midR][midC].startsWith(piece.split("-")[0]) && !board[endR][endC]) {
+        return true;  // Existe uma captura possível
       }
     }
   }
-  return false;
+
+  return false;  // Não existe captura
 }
+
 
 /* Pega célula pelo índice */
 function getCell(r,c){ return boardEl.children[r*SIZE+c]; }
@@ -224,12 +229,16 @@ function updatePlacar(){
   document.getElementById("pontosRed").innerText = pontos.red;
   document.getElementById("pontosBlack").innerText = pontos.black;
   const turnoEl = document.getElementById("turno");
-  turnoEl.innerText = currentPlayer === "red" ? "Vez de: Vermelho 🔴" : "Vez de: Preto ⚫";
+  turnoEl.innerText = currentPlayer === "red" ? "Vez de: Vermelho " : "Vez de: Preto ";
 }
 
 /* Inicializa tabuleiro */
 createBoard();
 </script>
+
+<footer>EPA 2025 - DESENVOLVIDO POR EDSON, FELIPE GABRIEL E GUSTAVO DISCHER </footer>
 </body>
 </html>
+
+
 
