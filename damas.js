@@ -1,5 +1,4 @@
-document.addEventListener("touchstart", function(e){ e.preventDefault(); }, {passive:false});
-    const SIZE = 8;                 // Tamanho do tabuleiro (8x8)
+ const SIZE = 8;                 // Tamanho do tabuleiro (8x8)
     let board = [];                 // Matriz que armazena as peças
     let selected = null;            // Posição da peça selecionada
     let currentPlayer = "red";      // Jogador da vez
@@ -27,7 +26,7 @@ document.addEventListener("touchstart", function(e){ e.preventDefault(); }, {pas
 
           // Evento de clique (PC) e toque (celular)
           cell.addEventListener("click",()=>handleClick(r,c));
-          cell.addEventListener("chstart",()=>handleClick(r,c));
+          cell.addEventListener("touchstart",()=>handleClick(r,c));
 
           // Colocar peças iniciais
           if((r+c)%2===1){
