@@ -1,125 +1,101 @@
 /* ====== ESTILO GERAL ====== */
 body {
-  font-family: Arial, sans-serif; /* Fonte usada no texto */
-  text-align: center; /* Centraliza o conteúdo */
-  margin: 0; /* Remove margem padrão */
-  padding: 0; /* Remove espaçamento interno padrão */
-  background: #f4f4f4; /* Cor de fundo da página */
-  font-size: 20px; /* Tamanho base da fonte */
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  background: #f4f4f4;
+  font-size: 20px;
 }
 
 /* ====== TOPO ====== */
 .topo {
-  background: #333; /* Fundo escuro */
-  color: white; /* Texto branco */
-  padding: 20px; /* Espaçamento interno */
-  font-size: 2.2em; /* Título grande */
+  background: #333;
+  color: white;
+  padding: 20px;
+  font-size: 2.2em;
 }
 
-/* ====== LINKS ====== */
-a { 
-  text-decoration: none; /* Remove sublinhado */
-  color: #333; /* Cor do link */
-  font-size: 1.3em; /* Tamanho do link */
-}
-
-/* ====== BOTÕES ====== */
+/* ====== BOTÃO ====== */
 button {
-  margin: 15px; /* Espaço externo */
-  padding: 15px 30px; /* Espaço interno (altura x largura) */
-  font-size: 1.3em; /* Texto do botão maior */
-  border: none; /* Remove borda padrão */
-  border-radius: 10px; /* Cantos arredondados */
-  background: #444; /* Fundo cinza escuro */
-  color: white; /* Texto branco */
-  cursor: pointer; /* Cursor de mãozinha */
+  margin: 15px;
+  padding: 15px 30px;
+  font-size: 1.3em;
+  border: none;
+  border-radius: 10px;
+  background: #444;
+  color: white;
+  cursor: pointer;
 }
-button:hover { 
-  background: #666; /* Fundo muda quando passa o mouse */
-}
+button:hover { background: #666; }
 
 /* ====== PLACAR ====== */
-.placar { 
-  margin: 15px; /* Espaço externo */
-  font-size: 1.5em; /* Texto maior */
+.placar {
+  margin: 15px;
+  font-size: 1.5em;
 }
 
-/* ====== TABULEIRO ====== */
+/* ===== TABULEIRO ===== */
 .board {
-  display: grid; /* Usa layout em grade */
-  grid-template-columns: repeat(8, 1fr); /* 8 colunas iguais */
-  grid-template-rows: repeat(8, 1fr); /* 8 linhas iguais */
-  margin: 0 auto; /* Centraliza na tela */
-  width: 95vw; /* Ocupa 95% da largura da tela */
-  max-width: 600px; /* Largura máxima */
-  aspect-ratio: 1 / 1; /* Mantém quadrado */
-  border: 3px solid #333; /* Borda do tabuleiro */
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  max-width: 90vw;      /* ocupa até 90% da tela */
+  max-height: 90vw;     /* mantém formato quadrado */
+  margin: 0 auto;
+  aspect-ratio: 1;      /* mantém formato 1:1 */
+  border: 4px solid #333;
+  border-radius: 8px;
 }
 
-.cell { 
-  display: flex; /* Usa flexbox */
-  justify-content: center; /* Centraliza na horizontal */
-  align-items: center; /* Centraliza na vertical */
+/* ====== CASAS DO TABULEIRO ====== */
+.cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.light { 
-  background: #eee; /* Cor clara da casa */
-}
-.dark { 
-  background: #444; /* Cor escura da casa */
-}
+/* Casa clara e escura */
+.light { background: #eee; }
+.dark  { background: #444; }
 
 /* ====== PEÇAS ====== */
-.piece { 
-  width: 70%; /* Tamanho proporcional da peça */
-  height: 70%; /* Mantém proporção */
-  border-radius: 50%; /* Deixa redonda */
+.piece {
+  width: 70%;
+  height: 70%;
+  border-radius: 50%;
 }
-.red { 
-  background: red; /* Peça vermelha */
-}
-.black { 
-  background: black; /* Peça preta */
-}
+.red   { background: red; }
+.black { background: black; }
 
-/* ====== DAMAS ====== */
-.king{
-  border: 4px solid yellow; /* Borda amarela de destaque */
-}
+/* ====== DAMA (KING) ====== */
+.king { border: 4px solid yellow; }
+.red.king { border-bottom: 4px solid red; }
+.black.king { border-bottom: 4px solid black; }
 
-.red.king {
-  border: 4px solid yellow;  /* Mantém borda amarela */
-  border-bottom: 4px solid red; /* Parte de baixo vermelha */
-}
+/* ====== SELEÇÃO ====== */
+.selected { outline: 3px solid yellow; }
 
-.black.king {
-  border: 4px solid yellow;   /* Mantém borda amarela */
-  border-bottom: 4px solid black; /* Parte de baixo preta */
-}
-
-/* ====== PEÇA SELECIONADA ====== */
-.selected { 
-  outline: 3px solid yellow; /* Marca a peça escolhida */
-}
-
+/* ====== TURNO ====== */
 #turno {
   margin: 10px;
   font-size: 1.4em;
   font-weight: bold;
 }
+.turno-red { color: red; }
+.turno-black { color: black; }
 
-.turno-red {
-  color: red;
+/* ====== RODAPÉ ====== */
+footer {
+  background: #333;
+  color: white;
+  padding: 20px;
 }
 
-.turno-black {
-  color: black;
+/* ====== RESPONSIVIDADE (celular) ====== */
+@media (max-width: 600px) {
+  body { font-size: 16px; }
+  .topo { font-size: 1.6em; padding: 10px; }
+  button { font-size: 1em; padding: 10px 20px; }
+  .placar { font-size: 1.2em; }
+  .piece { width: 80%; height: 80%; }
 }
-
-footer{
-  background: #333; /* Fundo escuro */
-  color: white; /* Texto branco */
-  padding: 20px; /* Espaçamento interno */
-}
-
-
